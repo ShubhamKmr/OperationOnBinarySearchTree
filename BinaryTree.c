@@ -26,7 +26,7 @@ int total_no_of_non_leaf_nodes(struct node * root);
 int height_of_tree(struct node * root);
 struct node * findMaxinLeftSubtree(struct node * root);
 bool DeleteNodeinTree(struct node *root,int val);
-//int deepth_of_node(struct node * root);
+int deepth_of_node(struct node * root,int value);
 //bool check_tree_is_bst_or_not(struct node * root);
 //struct node * successor_of_a_node(struct node * root);
 //struct node * predessor_of_a_node(struct node * root);
@@ -62,8 +62,16 @@ void main()
     printf("%d Total no of leaf nodes in tree\n",total_no_of_leaf_nodes(root));
     printf("%d Total no of non-leaf nodes in tree\n",total_no_of_non_leaf_nodes(root));
     printf("%d Height of tree\n",height_of_tree(root)-1);
-    if (DeleteNodeinTree(root,14))printf("Value in delete sucessfully\n");inorder_traversal(root);
-    if (DeleteNodeinTree(root,18))printf("Value in delete sucessfully\n");inorder_traversal(root);
+    /*For recursive process to find the depth of a node use below 2 lines*/
+    if (search_in_tree(root,10))printf("Depth of node is %d\n",deepth_of_node(root,10));
+    else printf("Value not in Tree\n");
+    /*For iterative process to find the depth of a node use below 2 lines*/
+    #if 0
+    int depth = deepth_of_node(root,10); 
+    if (depth || (root->data == 10))printf("Depth is %d\n",depth);
+    #endif
+    if (DeleteNodeinTree(root,14))printf("Value deleted sucessfully\n");inorder_traversal(root);
+    if (DeleteNodeinTree(root,18))printf("\nValue deleted sucessfully\n");inorder_traversal(root);
 }
 
 struct node * insert_node(struct node *root,int data)
@@ -258,7 +266,7 @@ bool DeleteNodeinTree(struct node *root,int val)
     }
     else
     {
-        printf("Data not in record");
+        printf("Data not in record\n");
         return false;
     }
 
@@ -267,14 +275,45 @@ struct node * findMaxinLeftSubtree(struct node * root)
 {
     if (root == NULL)return findMaxinLeftSubtree(root->right);
 }
-#if 0
+
 int deepth_of_node(struct node * root,int value)
 {
-(value == root->data) ? return 1 : return 0 ;
-else if ( value < root->data ) return 1 + deepth_of_node(root->left,value);
-else if (value > root->data ) return 1 + deepth_of_node(root->right,value);
+/*Iterative code to find depth of a node start*/
+#if 0	
+	unsigned short depth = 0;  
+	if (search_in_tree(root,value))
+	{
+		while(root->data != value)
+		{
+			if (value < root->data)
+			{
+				root = root->left;
+			}
+			else
+			{
+				root = root->right;
+			}
+                   depth++;
+		}
+         
+	return depth; 
+      
+	}
+	else
+	{
+		printf("Value not present in tree\n");
+                return 0;
+	}
+#endif	
+/*Iterative code to find depth of a node end*/
+	
+	/*Recursive code to find depth of a node start*/
+	if(root->data == value)return 0;
+	else if ( value < root->data ) return 1 + deepth_of_node(root->left,value);
+	else if (value > root->data ) return 1 + deepth_of_node(root->right,value);
+	/*Recursive code to find depth of a node end*/
 }
-#endif
+
 void enqueue(struct node * address)
 {
     if (rear == MAX_SIZE -1)
