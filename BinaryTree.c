@@ -11,6 +11,7 @@ struct node
 struct node * queue[MAX_SIZE];
 int front = -1;
 int rear = -1;
+bool flag = false;
 struct node * value= NULL;
 struct node *newnode = NULL;
 struct node * create_node(int data);
@@ -27,7 +28,7 @@ int height_of_tree(struct node * root);
 struct node * findMaxinLeftSubtree(struct node * root);
 bool DeleteNodeinTree(struct node *root,int val);
 int deepth_of_node(struct node * root,int value);
-//bool check_tree_is_bst_or_not(struct node * root);
+bool check_tree_is_bst_or_not(struct node * root);
 //struct node * successor_of_a_node(struct node * root);
 //struct node * predessor_of_a_node(struct node * root);
 void enqueue(struct node* address);
@@ -62,6 +63,8 @@ void main()
     printf("%d Total no of leaf nodes in tree\n",total_no_of_leaf_nodes(root));
     printf("%d Total no of non-leaf nodes in tree\n",total_no_of_non_leaf_nodes(root));
     printf("%d Height of tree\n",height_of_tree(root)-1);
+    if(check_tree_is_bst_or_not(root))printf("Is binary search tree\n");
+    else printf("Not a binary tree\n");
     /*For recursive process to find the depth of a node use below 2 lines*/
     if (search_in_tree(root,10))printf("Depth of node is %d\n",deepth_of_node(root,10));
     else printf("Value not in Tree\n");
@@ -312,6 +315,18 @@ int deepth_of_node(struct node * root,int value)
 	else if ( value < root->data ) return 1 + deepth_of_node(root->left,value);
 	else if (value > root->data ) return 1 + deepth_of_node(root->right,value);
 	/*Recursive code to find depth of a node end*/
+}
+
+bool check_tree_is_bst_or_not(struct node * root)
+{
+	if (root->left == NULL && root->right == NULL)return;
+	check_tree_is_bst_or_not(root->left);
+	if ((root->left->data < root->data) && (root->data > root->right->data))
+	{
+          flag = true;
+          return flag;
+	}
+	check_tree_is_bst_or_not(root->right);
 }
 
 void enqueue(struct node * address)
