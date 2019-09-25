@@ -30,7 +30,7 @@ bool DeleteNodeinTree(struct node *root,int val);
 int deepth_of_node(struct node * root,int value);
 bool check_tree_is_bst_or_not(struct node * root);
 //struct node * successor_of_a_node(struct node * root);
-//struct node * predessor_of_a_node(struct node * root);
+struct node * predessor_of_a_node(struct node * root);
 void enqueue(struct node* address);
 struct node * dequeue();
 void main()
@@ -48,6 +48,11 @@ void main()
     root = insert_node(root,18);
     root = insert_node(root,17);
     root = insert_node(root,16);
+    root = insert_node(root,22);
+    root = insert_node(root,19);
+    root = insert_node(root,20);
+    root = insert_node(root,24);
+    root = insert_node(root,21);
     postorder_traversal(root);
     printf("Postorder traversal\n");
     preorder_traversal(root);
@@ -63,8 +68,11 @@ void main()
     printf("%d Total no of leaf nodes in tree\n",total_no_of_leaf_nodes(root));
     printf("%d Total no of non-leaf nodes in tree\n",total_no_of_non_leaf_nodes(root));
     printf("%d Height of tree\n",height_of_tree(root)-1);
-    if(check_tree_is_bst_or_not(root))printf("Is binary search tree\n");
-    else printf("Not a binary tree\n");
+    //struct node * checkNode = searchNode(root,11,root);
+    //if (checkNode->flag)printf("Predessor of Node is %d\n",predessor_of_a_node(checkNode));
+    //else printf("Data not present in binary tree\n");
+    //if(check_tree_is_bst_or_not(root))printf("Is binary search tree\n");
+    //else printf("Not a binary tree\n");
     /*For recursive process to find the depth of a node use below 2 lines*/
     if (search_in_tree(root,10))printf("Depth of node is %d\n",deepth_of_node(root,10));
     else printf("Value not in Tree\n");
@@ -73,7 +81,7 @@ void main()
     int depth = deepth_of_node(root,10); 
     if (depth || (root->data == 10))printf("Depth is %d\n",depth);
     #endif
-    if (DeleteNodeinTree(root,14))printf("Value deleted sucessfully\n");inorder_traversal(root);
+    if (DeleteNodeinTree(root,22))printf("Value deleted sucessfully\n");inorder_traversal(root);
     if (DeleteNodeinTree(root,18))printf("\nValue deleted sucessfully\n");inorder_traversal(root);
 }
 
@@ -190,7 +198,12 @@ struct info obj;
 
 struct info * searchNode(struct node * root,int val , struct node * rootParent)
 {
-	if (root->data == val)
+	if (root == NULL)
+	{
+		obj.flag = false;
+		return &obj;
+	}
+	else if (root->data == val)
 	{
 		obj.childNode = root;
 		obj.parentNode = rootParent;
@@ -257,7 +270,7 @@ bool DeleteNodeinTree(struct node *root,int val)
         /*node with two children*/
         else if (address->childNode->left != NULL && address->childNode->right != NULL )
         {
-    		address = searchNode(root,val,root);
+    		//address = searchNode(root,val,root);
 		struct node * temp   =    findMaxinLeftSubtree(address->childNode->left);
                 int data = temp->data;
 		temp = address->childNode;
@@ -276,7 +289,8 @@ bool DeleteNodeinTree(struct node *root,int val)
 }
 struct node * findMaxinLeftSubtree(struct node * root)
 {
-    if (root == NULL)return findMaxinLeftSubtree(root->right);
+    if (root->right == NULL) return root;
+    else return findMaxinLeftSubtree(root->right);
 }
 
 int deepth_of_node(struct node * root,int value)
@@ -328,7 +342,20 @@ bool check_tree_is_bst_or_not(struct node * root)
 	}
 	check_tree_is_bst_or_not(root->right);
 }
+#if 0
+struct node * successor_of_a_node(struct node * node)
+{
+	if (node == NULL)return;
+	if (node->right == NULL)
+	{
 
+	}
+	else 
+	{
+		return successor_of_a_node(node->left);
+	}
+}
+#endif
 void enqueue(struct node * address)
 {
     if (rear == MAX_SIZE -1)
