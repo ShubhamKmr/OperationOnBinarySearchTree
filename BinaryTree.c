@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
+#include<limits.h>
 struct node
 {
     int data;
@@ -28,9 +29,13 @@ int height_of_tree(struct node * root);
 struct node * findMaxinLeftSubtree(struct node * root);
 bool DeleteNodeinTree(struct node *root,int val);
 int deepth_of_node(struct node * root,int value);
+bool IsSubTreeLesser(struct node * root,int val);
+bool IsSubTreeGreater(struct node * root,int val);
 bool check_tree_is_bst_or_not(struct node * root);
-//struct node * successor_of_a_node(struct node * root);
-struct node * predessor_of_a_node(struct node * root);
+int findMinInRightSubtree(struct node * root);
+int findMaxInLeftSubtree(struct node * root);
+int successor_of_a_node(struct node * root,int val);
+int predessor_of_a_node(struct node * root ,int val);
 void enqueue(struct node* address);
 struct node * dequeue();
 void main()
@@ -68,19 +73,20 @@ void main()
     printf("%d Total no of leaf nodes in tree\n",total_no_of_leaf_nodes(root));
     printf("%d Total no of non-leaf nodes in tree\n",total_no_of_non_leaf_nodes(root));
     printf("%d Height of tree\n",height_of_tree(root)-1);
-    //struct node * checkNode = searchNode(root,11,root);
-    //if (checkNode->flag)printf("Predessor of Node is %d\n",predessor_of_a_node(checkNode));
-    //else printf("Data not present in binary tree\n");
-    //if(check_tree_is_bst_or_not(root))printf("Is binary search tree\n");
-    //else printf("Not a binary tree\n");
+    if (search_in_tree(root,14))printf("%d is the successor\n",successor_of_a_node(root,14));
+    if(check_tree_is_bst_or_not(root))printf("Is binary search tree\n");
+    else printf("Not a binary tree\n");
+    
     /*For recursive process to find the depth of a node use below 2 lines*/
     if (search_in_tree(root,10))printf("Depth of node is %d\n",deepth_of_node(root,10));
     else printf("Value not in Tree\n");
+    
     /*For iterative process to find the depth of a node use below 2 lines*/
     #if 0
     int depth = deepth_of_node(root,10); 
     if (depth || (root->data == 10))printf("Depth is %d\n",depth);
     #endif
+    
     if (DeleteNodeinTree(root,22))printf("Value deleted sucessfully\n");inorder_traversal(root);
     if (DeleteNodeinTree(root,18))printf("\nValue deleted sucessfully\n");inorder_traversal(root);
 }
@@ -331,34 +337,88 @@ int deepth_of_node(struct node * root,int value)
 	/*Recursive code to find depth of a node end*/
 }
 
+/*Another approch to solve check whether a tree is binary search tree or not*/
+#if 0
+bool IsSubTreeLesser(struct node * root,int val)
+{
+	if (root == NULL)return true;
+	else if (root->data < val && IsSubTreeLesser(root->left,val) && IsSubTreeLesser(root->right,val))return true;
+	else return false;
+}
+
+bool IsSubTreeGreater(struct node * root,int val)
+{
+	if (root == NULL)return true;
+	else if (root->data > val && IsSubTreeGreater(root->left,val) && IsSubTreeGreater(root->right,val))return true;
+	else return false;
+}
+
 bool check_tree_is_bst_or_not(struct node * root)
 {
-	if (root->left == NULL && root->right == NULL)return;
-	check_tree_is_bst_or_not(root->left);
-	if ((root->left->data < root->data) && (root->data > root->right->data))
-	{
-          flag = true;
-          return flag;
-	}
-	check_tree_is_bst_or_not(root->right);
-}
-#if 0
-struct node * successor_of_a_node(struct node * node)
-{
-	if (node == NULL)return;
-	if (node->right == NULL)
-	{
+  if (root == NULL)return true;
+  if (IsSubTreeLesser(root->left,root->data) && IsSubTreeGreater(root->right,root->data) && check_tree_is_bst_or_not(root->left) && check_tree_is_bst_or_not(root->right) )return true;
+else return false;
 
-	}
-	else 
-	{
-		return successor_of_a_node(node->left);
-	}
 }
 #endif
+
+int findMinInRightSubtree(struct node * root)
+{
+	if (root == NULL)return INT_MAX;
+	else if (root->left == NULL)return root->data;
+	else findMinInRightSubtree(root->left);
+}
+
+int findMaxInLeftSubtree(struct node * root)
+{
+	if (root == NULL)return INT_MIN;
+	else if (root->right == NULL)return root->data;
+	else findMaxInLeftSubtree(root->right);
+}
+
+
+bool check_tree_is_bst_or_not(struct node * root)
+{
+  if (root == NULL)return true;
+  if (findMaxInLeftSubtree(root->left) < root->data && root->data < findMinInRightSubtree(root->right) && check_tree_is_bst_or_not(root->left) && check_tree_is_bst_or_not(root->right))return true;
+  else return false;
+
+}
+
+int successor_of_a_node(struct node * root , int val)
+{
+	/*Node with no right child*/
+	struct node * successor = root;
+	while (root->data != val)
+	{
+		if (val < root->data)
+		{
+			successor = root;
+			root = root->left;
+		}
+		else
+		{
+			root = root->right;	
+		}
+	}
+	if (root->right != NULL)
+	{
+		successor = root->right;
+		while(successor->left != NULL)
+		{
+			successor = successor->left;		
+		}
+	}
+    return successor->data;
+}
+
+int predessor_of_a_node(struct node * root ,int val)
+{
+
+}
 void enqueue(struct node * address)
 {
-    if (rear == MAX_SIZE -1)
+    if (rear == MAX_SIZE - 1)
     {
         printf("Queue is already full\n");
     }
