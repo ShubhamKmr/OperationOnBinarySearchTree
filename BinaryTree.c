@@ -9,6 +9,7 @@ struct node
     struct node * right;
 };
 #define MAX_SIZE 20
+/*All functions declaration */
 struct node * queue[MAX_SIZE];
 int front = -1;
 int rear = -1;
@@ -38,6 +39,7 @@ int successor_of_a_node(struct node * root,int val);
 int predessor_of_a_node(struct node * root ,int val);
 void enqueue(struct node* address);
 struct node * dequeue();
+/*Main function*/
 void main()
 {
     struct node * root = NULL;
@@ -73,7 +75,8 @@ void main()
     printf("%d Total no of leaf nodes in tree\n",total_no_of_leaf_nodes(root));
     printf("%d Total no of non-leaf nodes in tree\n",total_no_of_non_leaf_nodes(root));
     printf("%d Height of tree\n",height_of_tree(root)-1);
-    if (search_in_tree(root,14))printf("%d is the successor\n",successor_of_a_node(root,14));
+    if (search_in_tree(root,19))printf("%d is the successor\n",successor_of_a_node(root,19));
+    if (search_in_tree(root,19))printf("%d is the predessor\n",predessor_of_a_node(root,19));
     if(check_tree_is_bst_or_not(root))printf("Is binary search tree\n");
     else printf("Not a binary tree\n");
     
@@ -91,6 +94,7 @@ void main()
     if (DeleteNodeinTree(root,18))printf("\nValue deleted sucessfully\n");inorder_traversal(root);
 }
 
+/*All function defination*/
 struct node * insert_node(struct node *root,int data)
 {
     if (root == NULL)
@@ -276,7 +280,6 @@ bool DeleteNodeinTree(struct node *root,int val)
         /*node with two children*/
         else if (address->childNode->left != NULL && address->childNode->right != NULL )
         {
-    		//address = searchNode(root,val,root);
 		struct node * temp   =    findMaxinLeftSubtree(address->childNode->left);
                 int data = temp->data;
 		temp = address->childNode;
@@ -301,7 +304,8 @@ struct node * findMaxinLeftSubtree(struct node * root)
 
 int deepth_of_node(struct node * root,int value)
 {
-/*Iterative code to find depth of a node start*/
+
+	/*Iterative code to find depth of a node start*/
 #if 0	
 	unsigned short depth = 0;  
 	if (search_in_tree(root,value))
@@ -328,7 +332,7 @@ int deepth_of_node(struct node * root,int value)
                 return 0;
 	}
 #endif	
-/*Iterative code to find depth of a node end*/
+	/*Iterative code to find depth of a node end*/
 	
 	/*Recursive code to find depth of a node start*/
 	if(root->data == value)return 0;
@@ -361,6 +365,8 @@ else return false;
 
 }
 #endif
+
+/*To find Min in right subtree and Max in left subtree of a node and compare it with root node for all respectine node in binary tree*/
 
 int findMinInRightSubtree(struct node * root)
 {
@@ -401,6 +407,7 @@ int successor_of_a_node(struct node * root , int val)
 			root = root->right;	
 		}
 	}
+	/*Node with right child*/
 	if (root->right != NULL)
 	{
 		successor = root->right;
@@ -414,8 +421,33 @@ int successor_of_a_node(struct node * root , int val)
 
 int predessor_of_a_node(struct node * root ,int val)
 {
+	struct node * predessor = NULL;
+	/*Node with no left child*/
+	while(root->data != val)
+	{
+		if (val < root->data)
+		{
+		  root = root->left;
+		}
+		else
+		{
+		  predessor = root;
+		  root = root->right;
+		}
+	}
+	/*Node with a left child*/
+	if (root->left != NULL)
+	{
+            predessor = root->left;
+	    while(predessor->right != NULL)
+		{
+	             predessor = predessor->right;	
+		} 
+	}
 
+return predessor->data;
 }
+
 void enqueue(struct node * address)
 {
     if (rear == MAX_SIZE - 1)
@@ -424,6 +456,7 @@ void enqueue(struct node * address)
     }
     queue[++rear] =  address;
 }
+
 struct node * dequeue()
 {
     if (rear == -1 && front == -1)
